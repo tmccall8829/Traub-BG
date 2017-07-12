@@ -1,0 +1,1 @@
+../mod/alphasynkin.mod

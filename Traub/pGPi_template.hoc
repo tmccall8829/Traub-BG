@@ -1,0 +1,118 @@
+/*--------------------------------------------------------------
+	TEMPLATE FILE FOR DEFINING PALLIDIAL NEURONS - Parallel version
+	--------------------------------------------------
+
+	One compartment model and currents derived from:
+
+ 	Cooper and Nambu papers
+
+	Dongchul C. Lee, Cleveland Clinic, 2005
+	This file is for GPi neuron, but the mechanism is from GPe A-type neuron.
+
+	May 2006 parallel code - PJ Hahn
+
+--------------------------------------------------------------*/
+
+begintemplate pGPi		// create a new template object
+
+public soma, gpi_synlist, connect2target, is_art
+
+objref gpi_synlist
+
+create soma
+
+proc init() {
+
+  soma {
+	diam = 60		// geometry 
+	L = 60			// so that area is about 10000 um2
+	nseg = 1
+	Ra = 200
+	cm = 1
+	insert myions //dummy mechanism used to set initial ion concentrations
+	insert GPeA
+		kca_GPeA = 2           //Ca removal rate [1/ms] 	
+		gkcabar_GPeA = 0.1e-3  //[S/cm2]
+		gcatbar_GPeA = 6.7E-5  // T current
+		gkdrbar_GPeA = 0.0042  // Delayed rectifier
+		gnabar_GPeA = 0.04     //Fast Na
+		gl_GPeA = 4E-5         //Leakage current	
+
+	gpi_synlist = new List()
+  
+	synapses($1,$2,$3) // $1 numStrGpi, $2 numSTNGPi, $3 numGPeGPi
+		
+  }
+
+
+  cai0_ca_ion = 5e-6 //mM 
+  cao0_ca_ion = 2 
+  ki0_k_ion = 105 //calculated so that Nernst potential is same as in paper
+  ko0_k_ion = 3
+  nao0_na_ion = 108
+  nai0_na_ion = 10
+
+  numStrGPi_ = $1
+  numSTNGPi_ = $2
+  numGPeGPi_ = $3
+
+}
+
+
+// 
+// proc connect2target() { //$o1 target object, $o2 returned NetCon
+// 	soma $o2 = new NetCon(&v(1), $o1)
+// }
+
+obfunc connect2target() { localobj nc //$o1 target point process, optional $o2 returned netcon
+	soma nc = new NetCon(&v(1), $o1)
+	nc.threshold = 10
+	if (numarg() == 2) {
+		$o2 = nc
+	}
+	return nc
+}
+
+objref syn_
+proc synapses() { // $1 numStrGpi, $2 numSTNGPi, $3 numGPeGPi
+
+// GABAergic striatal inputs
+// in pBGconst	numStrGPi = 7	
+
+	for i=0,$1 - 1 {
+		soma syn_ = new GABAa_S(.5)
+		syn_.Cmax = 1
+		gpi_synlist.append(syn_)
+	}
+
+
+// glutamatergic STN inputs
+// in pBGconst	numSTNGPi = 	
+
+	for i=0,$2 - 1 {
+		soma syn_ = new AMPA_S(.5)
+		syn_.Cmax = 1
+		gpi_synlist.append(syn_)
+	}
+
+
+// GABAergic GPe inputs
+// in pBGconst	numGPeGPi = 	
+
+	for i=0,$3 - 1 {
+		soma syn_ = new GABAa_S(.5)
+		syn_.Cmax = 1
+		gpi_synlist.append(syn_)
+	}
+
+}
+
+
+
+proc is_art() {
+	return 0
+}
+
+
+
+endtemplate pGPi

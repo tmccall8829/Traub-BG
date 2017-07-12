@@ -1,0 +1,162 @@
+/* ----------------------------------------------------------------------------------------------------
+
+				This .hoc file contains the procedure/function readParms, which
+				reads the parameters from a textfile (given as $s1). It is loaded
+				in init.hoc.
+
+---------------------------------------------------------------------------------------------------- */
+
+proc readParms() {local i localobj f
+//Setup global parameters from values stored in parameter file, name passed as $s1
+
+f = new File()
+{f.ropen($s1)}
+
+// Counts
+sav1 = numSTN
+sav2 = numGPe
+sav3 = numGPi
+
+numSTN = f.scanvar()
+numGPe = f.scanvar()
+numGPi = f.scanvar()
+numStr = f.scanvar()
+ncell = numSTN + numGPe + numGPi + numStr
+
+numSTNGPe = f.scanvar()		// each GPe contacted by numSTNGPe presyn STN cells, etc...
+numGPeGPe = f.scanvar()
+numGPeSTN = f.scanvar()
+numGPeGPi = f.scanvar()
+numSTNGPi = f.scanvar()
+numCtxSTN = f.scanvar()
+numStrGPe = f.scanvar()
+numStrGPi = f.scanvar()
+numCtxStr = f.scanvar()
+numGPiTha = f.scanvar()
+
+divSTNGPe = f.scanvar()		// each STN contacts divSTNGPe postsyn GPe cells, etc...
+divGPeGPe = f.scanvar()
+divGPeSTN = f.scanvar()
+divGPeGPi = f.scanvar()
+divSTNGPi = f.scanvar()
+divGPiTha = f.scanvar()
+
+
+//-----------------------------------------------------------------------------------------------------
+// bias currents
+iBiasSTN = f.scanvar()
+iBiasGPe = f.scanvar()
+iBiasGPi = f.scanvar()
+
+
+
+//-----------------------------------------------------------------------------------------------------
+// cell to cell connection parameters
+gmaxSTNGPe = f.scanvar()
+gmaxGPeGPe = f.scanvar()
+gmaxGPeSTN = f.scanvar()
+gmaxGPeGPi = f.scanvar()
+gmaxSTNGPi = f.scanvar()
+gmaxGPiTha = f.scanvar()
+
+gDA_STNGPe = f.scanvar()
+gDA_GPeGPe = f.scanvar()
+gDA_GPeSTN = f.scanvar()
+gDA_GPeGPi = f.scanvar()
+gDA_STNGPi = f.scanvar()
+gDA_GPiTha = f.scanvar()
+
+// THESE NEED TO BE SELECTED BASED ON EXPERIMENTAL/ANATOMICAL DATA ***********************************
+delSTNGPe = f.scanvar()
+delGPeGPe = f.scanvar()
+delGPeSTN = f.scanvar()
+delGPeGPi = f.scanvar()
+delSTNGPi = f.scanvar()
+delGPiTha = f.scanvar()
+
+
+
+//-----------------------------------------------------------------------------------------------------
+// higher level input connection parameters
+imnCtxSTN = f.scanvar()
+isdCtxSTN = f.scanvar()
+bmnCtxSTN = f.scanvar()
+bsdCtxSTN = f.scanvar()
+bdmnCtxSTN = f.scanvar()
+bdsdCtxSTN = f.scanvar()
+
+imnStrGPe = f.scanvar()
+isdStrGPe = f.scanvar()
+bmnStrGPe = f.scanvar()
+bsdStrGPe = f.scanvar()
+bdmnStrGPe = f.scanvar()
+bdsdStrGPe = f.scanvar()
+
+imnStrGPi = f.scanvar()
+isdStrGPi = f.scanvar()
+bmnStrGPi = f.scanvar()
+bsdStrGPi = f.scanvar()
+bdmnStrGPi = f.scanvar()
+bdsdStrGPi = f.scanvar()
+
+probCtxSTN.resize(numCtxSTN)
+for i=0,numCtxSTN-1 {
+	probCtxSTN.x(i) = f.scanvar()
+}
+
+probStrGPe.resize(numStrGPe)
+for i=0,numStrGPe-1 {
+	probStrGPe.x(i) = f.scanvar()
+}
+
+probStrGPi.resize(numStrGPi)
+for i=0,numStrGPi-1 {
+	probStrGPi.x(i) = f.scanvar()
+}
+
+gmaxCtxSTN = f.scanvar()
+gmaxStrGPe = f.scanvar()
+gmaxStrGPi = f.scanvar()
+
+gDA_CtxSTN = f.scanvar()
+gDA_StrGPe = f.scanvar()
+gDA_StrGPi = f.scanvar()
+
+delCtxSTN = f.scanvar()
+delStrGPe = f.scanvar()
+delStrGPi = f.scanvar()
+
+
+
+
+//-----------------------------------------------------------------------------------------------------
+// DBS parameters
+dbs_del = f.scanvar()
+dbs_dur = f.scanvar()
+dbs_direct_amp = f.scanvar()
+dbs_direct_pw = f.scanvar()
+dbs_ad_amp = f.scanvar()
+dbs_ad_pw = f.scanvar()
+dbs_period = f.scanvar()
+
+dbs_odSTNGPe_weight = gmaxSTNGPe
+dbs_odSTNGPi_weight = gmaxSTNGPi
+dbs_odGPeSTN_weight = gmaxGPeSTN
+dbs_odGPiTha_weight = 1
+
+dbs_odSTNGPe_delay = delSTNGPe/2
+dbs_odSTNGPi_delay = delSTNGPi/2
+dbs_odGPeSTN_delay = delGPeSTN/2
+dbs_odGPiTha_delay = delGPiTha/2
+
+f.close()
+
+/*
+if (numSTN != sav1 || numGPe != sav2 || numGPi != sav3) {
+	return 1	//number of cells (and cellIds) have changed
+} else {
+	return 0
+}
+*/
+
+}

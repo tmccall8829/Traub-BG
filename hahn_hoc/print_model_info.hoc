@@ -1,0 +1,52 @@
+/* Print model info to file */
+
+objref f
+f = new File("model_data.txt")
+f.wopen()
+f.printf("")
+f.close() // these three lines clear the file
+
+str_total = num_tuftIB * numStr + num_tuftRS * numStr
+tot_CtxStr = ncCtxStr.count/str_total * 100
+f.aopen()
+f.printf("ctxProb: %.3f\n", ctxProb)
+f.printf("Percentage of CtxStr cons made: %.2f%\n", tot_CtxStr)
+f.printf("Percentage variation in CtxStr from ctxProb: %.2f%\n", tot_CtxStr - ctxProb*100)
+f.close()
+
+stn_total = num_tuftIB * numSTN + num_tuftRS * numSTN
+tot_CtxSTN = ncCtxSTN.count/stn_total * 100
+f.aopen()
+f.printf("Percentage of CtxSTN cons made: %.2f%\n", tot_CtxSTN)
+f.printf("Percentage variation in CtxSTN from ctxProb: %.2f%\n", tot_CtxSTN - ctxProb*100)
+f.printf("\n")
+f.close()
+
+
+// Data from connect_cells.hoc
+f.aopen()
+f.printf("----------------------\n")
+f.printf("nclist connection data\n")
+f.printf("contains cons set in connect_cells.hoc\n")
+f.printf("----------------------\n")
+f.close()
+for i=0, nclist.count-1 {
+    f.aopen()
+    f.printf("%s -> %s\n", nclist.o(i).precell, nclist.o(i).postcell)
+    f.close()
+}
+
+// Data from cortical_input.hoc
+f.aopen()
+for i=0, 3 {
+    f.printf(" \n")
+}
+f.printf("------------------------\n")
+f.printf("cortical connection data\n")
+f.printf("------------------------\n")
+f.close()
+for i=0, nclistINP.count-1 {
+    f.aopen()
+    f.printf("%s -> %s\n", nclistINP.o(i).precell, nclistINP.o(i).postcell)
+    f.close()
+}

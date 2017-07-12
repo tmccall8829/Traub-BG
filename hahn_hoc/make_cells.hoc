@@ -1,0 +1,47 @@
+// Load cell templates
+{load_file("pSTN_template.hoc")}
+{load_file("pGPi_template.hoc")}
+{load_file("pGPeA_template.hoc")}
+{load_file("pStr_template.hoc")}
+
+
+objref hahn_cells, nclist
+
+proc makecells() {local i  localobj stn_cell, gpe_cell, gpi_cell, str_cell, nc, nil
+
+	// Necessary for compatibility between Traub and McCall-BGnet cell lists
+	//global_gidoffset = 4000
+
+	hahn_cells = new List()
+	nclist = new List()
+	for (i=pc.id(); i<$1; i += pc.nhost()) {
+		if (i >= 0 && i < 10) {
+			stn_cell = new pSTN(numCtxSTN, numGPeSTN)
+			hahn_cells.append(stn_cell)
+			pc.set_gid2node(i+global_gidoffset, pc.id())
+			nc = stn_cell.connect2target(nil)
+			pc.cell(i+global_gidoffset, nc)
+		}
+		if (i >= 10 && i < 40) {
+			gpe_cell = new pGPe(numStrGPe, numSTNGPe, numGPeGPe)
+			hahn_cells.append(gpe_cell)
+			pc.set_gid2node(i+global_gidoffset, pc.id())
+			nc = gpe_cell.connect2target(nil)
+			pc.cell(i+global_gidoffset, nc)
+		}
+		if (i >= 40 && i < 50) {
+			gpi_cell = new pGPi(numStrGPi, numSTNGPi, numGPeGPi)
+			hahn_cells.append(gpi_cell)
+			pc.set_gid2node(i+global_gidoffset, pc.id())
+			nc = gpi_cell.connect2target(nil)
+			pc.cell(i+global_gidoffset, nc)
+		}
+		if (i >= 50 && i < 60) {
+			str_cell = new pStr(numStrGPe, numStrGPi)
+			hahn_cells.append(str_cell)
+			pc.set_gid2node(i+global_gidoffset, pc.id())
+			nc = str_cell.connect2target(nil)
+			pc.cell(i+global_gidoffset, nc)
+		}
+	}
+}

@@ -1,0 +1,134 @@
+/* ---------------------------------------------------------------------------
+
+			This file contains a procedure to print out all of
+			the important variable values, in order to debug
+			the model state setting in init.hoc and parBGLaunch_edit.hoc
+			
+--------------------------------------------------------------------------- */
+
+proc printValues() {
+	
+printf("numSTN:\t %f\n", numSTN)
+printf("numGPe:\t %f\n", numGPe)
+printf("numGPi:\t %f\n", numGPi)
+ 
+printf("numSTNGPe:\t %f\n", numSTNGPe)		// each GPe contacted by numSTNGPe presyn STN cells, etc...
+printf("numGPeGPe:\t %f\n", numGPeGPe)
+printf("numGPeSTN:\t %f\n", numGPeSTN)
+printf("numGPeGPi:\t %f\n", numGPeGPi)
+printf("numSTNGPi:\t %f\n", numSTNGPi)
+printf("numCtxSTN:\t %f\n", numCtxSTN)
+printf("numStrGPe:\t %f\n", numStrGPe)
+printf("numStrGPi:\t %f\n", numStrGPi)
+printf("numGPiTha:\t %f\n", numGPiTha)
+
+printf("divSTNGPe:\t %f\n", divSTNGPe)		// each STN contacts divSTNGPe postsyn GPe cells, etc...
+printf("divGPeGPe:\t %f\n", divGPeGPe)
+printf("divGPeSTN:\t %f\n", divGPeSTN)
+printf("divGPeGPi:\t %f\n", divGPeGPi)
+printf("divSTNGPi:\t %f\n", divSTNGPi)
+printf("divGPiTha:\t %f\n", divGPiTha)
+
+
+//-----------------------------------------------------------------------------------------------------
+// bias currents
+
+printf("iBiasSTN:\t %f\n", iBiasSTN)
+printf("iBiasGPe:\t %f\n", iBiasGPe)
+printf("iBiasGPi:\t %f\n", iBiasGPi)
+
+
+
+//-----------------------------------------------------------------------------------------------------
+// cell to cell connection parameters
+
+printf("gmaxSTNGPe:\t %f\n", gmaxSTNGPe)
+printf("gmaxGPeGPe:\t %f\n", gmaxGPeGPe)
+printf("gmaxGPeSTN:\t %f\n", gmaxGPeSTN)
+printf("gmaxGPeGPi:\t %f\n", gmaxGPeGPi)
+printf("gmaxSTNGPi:\t %f\n", gmaxSTNGPi)
+printf("gmaxGPiTha:\t %f\n", gmaxGPiTha)
+
+printf("gDA_STNGPe:\t %f\n", gDA_STNGPe)
+printf("gDA_GPeGPe:\t %f\n", gDA_GPeGPe)
+printf("gDA_GPeSTN:\t %f\n", gDA_GPeSTN)
+printf("gDA_GPeGPi:\t %f\n", gDA_GPeGPi)
+printf("gDA_STNGPi:\t %f\n", gDA_STNGPi)
+printf("gDA_GPiTha:\t %f\n", gDA_GPiTha)
+
+// THESE NEED TO BE SELECTED BASED ON EXPERIMENTAL/ANATOMICAL DATA ***********************************
+printf("delSTNGPe:\t %f\n", delSTNGPe)
+printf("delGPeGPe:\t %f\n", delGPeGPe)
+printf("delGPeSTN:\t %f\n", delGPeSTN)
+printf("delGPeGPi:\t %f\n", delGPeGPi)
+printf("delSTNGPi:\t %f\n", delSTNGPi)
+printf("delGPiTha:\t %f\n", delGPiTha)
+
+
+
+//-----------------------------------------------------------------------------------------------------
+// higher level input connection parameters
+
+printf("imnCtxSTN:\t %f\n", imnCtxSTN)
+printf("isdCtxSTN:\t %f\n", isdCtxSTN)
+printf("bmnCtxSTN:\t %f\n", bmnCtxSTN)
+printf("bsdCtxSTN:\t %f\n", bsdCtxSTN)
+printf("bdmnCtxSTN:\t %f\n", bdmnCtxSTN)
+printf("bdsdCtxSTN:\t %f\n", bdsdCtxSTN)
+
+printf("imnStrGPe:\t %f\n", imnStrGPe)
+printf("isdStrGPe:\t %f\n", isdStrGPe)
+printf("bmnStrGPe:\t %f\n", bmnStrGPe)
+printf("bsdStrGPe:\t %f\n", bsdStrGPe)
+printf("bdmnStrGPe:\t %f\n", bdmnStrGPe)
+printf("bdsdStrGPe:\t %f\n", bdsdStrGPe)
+
+printf("imnStrGPi:\t %f\n", imnStrGPi)
+printf("isdStrGPi:\t %f\n", isdStrGPi)
+printf("bmnStrGPi:\t %f\n", bmnStrGPi)
+printf("bsdStrGPi:\t %f\n", bsdStrGPi)
+printf("bdmnStrGPi:\t %f\n", bdmnStrGPi)
+printf("bdsdStrGPi:\t %f\n", bdsdStrGPi)
+
+for i=0,6 {
+	printf("probCtxSTN #%d:\t %f\n", i, probCtxSTN.x(i))
+}
+
+for i=0,6 {
+	printf("probStrGPe #%d:\t %f\n", i, probStrGPe.x(i))
+}
+
+for i=0,6 {
+	printf("probStrGPi #%d:\t %f\n", i, probStrGPi.x(i))
+}
+
+printf("gmaxCtxSTN:\t %f\n", gmaxCtxSTN)
+printf("gmaxStrGPe:\t %f\n", gmaxStrGPe)
+printf("gmaxStrGPi:\t %f\n", gmaxStrGPi)
+
+printf("gDA_CtxSTN:\t %f\n", gDA_CtxSTN)
+printf("gDA_StrGPe:\t %f\n", gDA_StrGPe)
+printf("gDA_StrGPi:\t %f\n", gDA_StrGPi)
+
+// THESE NEED TO BE SELECTED BASED ON EXPERIMENTAL/ANATOMICAL DATA ***********************************
+printf("delCtxSTN:\t %f\n", delCtxSTN)
+printf("delStrGPe:\t %f\n", delStrGPe)
+printf("delStrGPi:\t %f\n", delStrGPi)
+
+
+
+
+//-----------------------------------------------------------------------------------------------------
+// DBS parameters
+
+printf("dbs_del:\t %f\n", dbs_del)
+printf("dbs_dur:\t %f\n", dbs_dur)
+printf("dbs_direct_amp:\t %f\n", dbs_direct_amp)
+printf("dbs_direct_pw:\t %f\n", dbs_direct_pw)
+printf("dbs_ad_amp:\t %f\n", dbs_ad_amp)
+printf("dbs_ad_pw:\t %f\n", dbs_ad_pw)
+printf("dbs_period:\t %f\n", dbs_period)
+
+}
+
+printValues()

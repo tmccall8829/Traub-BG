@@ -1,0 +1,278 @@
+//----------------------------------------------------------------------------
+// Initialize global variables
+// ******** USE THIS FILE TO CONNECT TRAUB CORTICAL INPUT? ********
+//----------------------------------------------------------------------------
+
+objref preCtxSTN[numSTN], preStrGPe[numGPe], preStrGPi[numGPi]	//list of input timing objects for each cell
+objref ncCtxSTN, ncStrGPe, ncStrGPi, ncCtxStr
+
+for (i=pc.id(); i < ncell; i += pc.nhost()) {
+	if (i >= 0 && i < 10 && pc.gid_exists(i+global_gidoffset)) {
+		preCtxSTN[i] = new List()
+	}
+	if (i >= 10 && i < 40 && pc.gid_exists(i+global_gidoffset)) {
+		preStrGPe[i-10] = new List()
+	}
+	if (i >= 40 && i < 50 && pc.gid_exists(i+global_gidoffset)) {
+		preStrGPi[i-40] = new List()
+	}
+}
+
+ncCtxSTN = new List()
+ncCtxStr = new List()
+ncStrGPe = new List()
+ncStrGPi = new List()
+
+//----------------------------------------------------------------------------
+// Functions to set up input from current value of global variables
+//----------------------------------------------------------------------------
+
+objref preSyn, nc, nclistINP
+
+nclistINP = new List()
+
+proc INPconnectNet() { local i,j,k,p,r  localobj preSyn, target, source, syn, nc, randCon
+begin_tuftIB = num_suppyrRS + num_suppyrFRB + num_supbask + num_supaxax + num_supLTS + num_spinstell
+begin_tuftRS = begin_tuftIB + num_tuftIB
+
+// Connect tuftIB cells to STN and GPe/GPi through striatum
+	randCon = new Random(seedVal)
+	randCon.uniform(0, 1)
+	for (i=pc.id(); i < ncell; i += pc.nhost()) {
+		if (i >= 0 && i < 10 && pc.gid_exists(i+global_gidoffset)) {
+			// create direct cortical connections to STN
+			for j=0, numCtxSTN-1 {
+				for k=0, num_tuftIB-1 {
+					r = randCon.repick()
+					if (r < ctxProb) {
+						target = pc.gid2cell(i+global_gidoffset)
+						syn = target.stn_synlist.o(j)
+						nc = pc.gid_connect(begin_tuftIB + k, syn)
+						nc.weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN
+						nc.delay = delCtxSTN
+						nclistINP.append(nc)
+						ncCtxSTN.append(nc)
+					}
+				}
+			}
+		}
+		if (i >= 10 && i < 40 && pc.gid_exists(i+global_gidoffset)) {
+			// create connections between the GPe and the striatum
+			for j=0, numStrGPe-1 {
+				for k=0, numStr-1 {
+					r = randCon.repick()
+					if (r < ctxProb) {
+						target = pc.gid2cell(i+global_gidoffset)
+						syn = target.gpe_synlist.o(j)
+						nc = pc.gid_connect(k+global_gidoffset+50, syn)
+						nc.weight = gDA_StrGPe*gmaxStrGPe/numStrGPe
+						nc.delay = delStrGPe
+						nclistINP.append(nc)
+						ncStrGPe.append(nc)
+					}
+				}
+			}
+		}
+		if (i >= 40 && i < 50 && pc.gid_exists(i+global_gidoffset)) {
+			// create connections between the GPi and the striatum
+			for j=0, numStrGPi-1 {
+				for k=0, numStr-1 {
+					r = randCon.repick()
+					if (r < ctxProb) {
+						target = pc.gid2cell(i+global_gidoffset)
+						syn = target.gpi_synlist.o(j)
+						nc = pc.gid_connect(global_gidoffset+k+50, syn)
+						nc.weight = gDA_StrGPi*gmaxStrGPi/numStrGPi
+						nc.delay = delStrGPi
+						nclistINP.append(nc)
+						ncStrGPi.append(nc)
+					}
+				}
+			}
+		}
+		if (i >= 50 && i < 60 && pc.gid_exists(i+global_gidoffset)) {
+			for j=0, numCtxStr-1 {
+				for k=0, num_tuftIB-1 {
+					r = randCon.repick()
+					if (r < ctxProb) {
+						target = pc.gid2cell(i+global_gidoffset)
+						syn = target.str_synlist.o(j)
+						nc = pc.gid_connect(begin_tuftIB + k, syn)
+						nc.weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN
+						nc.delay = delCtxSTN
+						nclistINP.append(nc)
+						ncCtxStr.append(nc)
+					}
+				}
+			}
+		}
+	}
+
+
+// Connect tuftRS cells to STN and GPe/GPi through striatum
+	randCon = new Random(seedVal)
+	randCon.uniform(0, 1)
+	for (i=pc.id(); i < ncell; i += pc.nhost()) {
+		if (i >= 0 && i < 10 && pc.gid_exists(i+global_gidoffset)) {
+			for j=0, numCtxSTN-1 {
+				for p=0, num_tuftRS-1 {
+					r = randCon.repick()
+					if (r < ctxProb) {
+						target = pc.gid2cell(i+global_gidoffset)
+						syn = target.stn_synlist.o(j)
+						nc = pc.gid_connect(begin_tuftRS + p, syn)
+						nc.weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN
+						nc.delay = delCtxSTN
+						nclistINP.append(nc)
+						ncCtxSTN.append(nc)
+					}
+				}
+			}
+		}
+		if (i >= 10 && i < 40 && pc.gid_exists(i+global_gidoffset)) {
+			for j=0, numStrGPe-1 {
+				for p=0, numStr-1 {
+					r = randCon.repick()
+					if (r < ctxProb) {
+						target = pc.gid2cell(i+global_gidoffset)
+						syn = target.gpe_synlist.o(j)
+						nc = pc.gid_connect(p+global_gidoffset+50, syn)
+						nc.weight = gDA_StrGPe*gmaxStrGPe/numStrGPe
+						nc.delay = delStrGPe
+						nclistINP.append(nc)
+						ncStrGPe.append(nc)
+					}
+				}
+			}
+		}
+		if (i >= 40 && i < 50 && pc.gid_exists(i+global_gidoffset)) {
+			for j=0, numStrGPi-1 {
+				for p=0, numStr-1 {
+					r = randCon.repick()
+					if (r < ctxProb) {
+						target = pc.gid2cell(i+global_gidoffset)
+						syn = target.gpi_synlist.o(j)
+						nc = pc.gid_connect(p + global_gidoffset + 50, syn)
+						nc.weight = gDA_StrGPi*gmaxStrGPi/numStrGPi
+						nc.delay = delStrGPi
+						nclistINP.append(nc)
+						ncStrGPi.append(nc)
+					}
+				}
+			}
+		}
+		if (i >= 50 && i < 60 && pc.gid_exists(i+global_gidoffset)) {
+			for j=0, numCtxStr-1 {
+				for p=0, num_tuftRS-1 {
+					r = randCon.repick()
+					if (r < ctxProb) {
+						target = pc.gid2cell(i+global_gidoffset)
+						syn = target.str_synlist.o(j)
+						nc = pc.gid_connect(begin_tuftRS + p, syn)
+						nc.weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN
+						nc.delay = delCtxSTN
+						nclistINP.append(nc)
+						ncCtxStr.append(nc)
+					}
+				}
+			}
+		}
+	}
+}
+
+//----------------------------------------------------------------------------
+proc INPupdateWeights() { local i,j,k
+	for k=0, ncCtxSTN.count-1 {
+		ncCtxSTN.o(k).weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN
+		ncCtxSTN.o(k).delay = delCtxSTN
+	}
+	for k=0, ncCtxStr.count-1 {
+		ncCtxStr.o(k).weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN
+		ncCtxStr.o(k).delay = delCtxSTN
+	}
+	for k=0, ncStrGPe.count-1 {
+		ncStrGPe.o(k).weight = gDA_StrGPe*gmaxStrGPe/numStrGPe
+		ncStrGPe.o(k).delay = delStrGPe
+	}
+	for k=0, ncStrGPi.count-1 {
+		ncStrGPi.o(k).weight = gDA_StrGPi*gmaxStrGPi/numStrGPi
+		ncStrGPi.o(k).delay = delStrGPi
+	}
+}
+
+
+//----------------------------------------------------------------------------
+proc setMPTPinput() {local i
+//---------------
+
+probCtxSTN.fill(.25)
+probStrGPe.fill(.25)
+probStrGPi.fill(.25)
+
+imnCtxSTN = 75
+
+imnStrGPe = 75
+imnStrGPi = 150
+
+gDA_CtxSTN = 1.25
+gDA_StrGPe = 1.25
+gDA_StrGPi = 1
+gDA_STNGPe = 1.25
+gDA_STNGPi = 1
+gDA_GPeSTN = 1.25
+gDA_GPeGPe = 1
+gDA_GPeGPi = 1.25
+
+INPupdateWeights()
+CONupdateWeights()
+
+}
+
+
+//-----------------------------------------------------------------------------------------------------
+proc setNORMALinput() {local i
+//---------------
+
+probCtxSTN.fill(.05)
+probStrGPe.fill(.05)
+probStrGPi.fill(.05)
+
+imnCtxSTN = 100
+imnStrGPe = 100
+imnStrGPi = 100
+
+gDA_CtxSTN = 1
+gDA_StrGPe = 1
+gDA_StrGPi = 1
+gDA_STNGPe = 2
+gDA_STNGPi = 1
+gDA_GPeSTN = 1
+gDA_GPeGPe = 1
+gDA_GPeGPi = 1
+
+INPupdateWeights()
+CONupdateWeights()
+
+}
+
+
+//-----------------------------------------------------------------------------------------------------
+proc setPROBinput() {local i
+//---------------
+
+probCtxSTN.fill($1)
+probStrGPe.fill($1)
+probStrGPi.fill($1)
+
+INPupdateWeights()
+
+
+}
+
+
+//----------------------------------------------------------------------------
+// Call setup functions when .hoc file is loaded
+//----------------------------------------------------------------------------
+
+INPconnectNet()
+INPupdateWeights()

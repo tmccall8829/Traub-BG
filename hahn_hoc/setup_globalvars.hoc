@@ -1,0 +1,122 @@
+/* ---------------------------------------------------------------------------
+
+							Setup global parameters
+
+--------------------------------------------------------------------------- */
+
+
+objref probCtxSTN, probStrGPe, probStrGPi
+
+//-----------------------------------------------------------------------------------------------------
+// IDs
+
+ID_STN = 1
+ID_GPe = 2
+ID_GPi = 3
+ID_Ctx = 4
+ID_Str = 5
+ID_Tha = 6
+
+// make space for variables
+numSTN = 0
+numGPe = 0
+numGPi = 0
+numStr = 0
+ncell = 0
+numSTNGPe = 0
+numGPeGPe = 0
+numGPeSTN = 0
+numGPeGPi = 0
+numSTNGPi = 0
+numCtxSTN = 0
+numCtxStr = 0
+numStrGPe = 0
+numStrGPi = 0
+numGPiTha = 0
+
+divSTNGPe = 0
+divGPeGPe = 0
+divGPeSTN = 0
+divGPeGPi = 0
+divSTNGPi = 0
+divGPiTha = 0
+
+iBiasSTN = 0
+iBiasGPe = 0
+iBiasGPi = 0
+
+gmaxSTNGPe = 0
+gmaxGPeGPe = 0
+gmaxGPeSTN = 0
+gmaxGPeGPi = 0
+gmaxSTNGPi = 0
+gmaxGPiTha = 0
+
+gDA_STNGPe = 0
+gDA_GPeGPe = 0
+gDA_GPeSTN = 0
+gDA_GPeGPi = 0
+gDA_STNGPi = 0
+gDA_GPiTha = 0
+
+delSTNGPe = 0
+delGPeGPe = 0
+delGPeSTN = 0
+delGPeGPi = 0
+delSTNGPi = 0
+delGPiTha = 0
+
+imnCtxSTN = 0
+isdCtxSTN = 0
+bmnCtxSTN = 0
+bsdCtxSTN = 0
+bdmnCtxSTN = 0
+bdsdCtxSTN = 0
+
+imnStrGPe = 0
+isdStrGPe = 0
+bmnStrGPe = 0
+bsdStrGPe = 0
+bdmnStrGPe = 0
+bdsdStrGPe = 0
+
+imnStrGPi = 0
+isdStrGPi = 0
+bmnStrGPi = 0
+bsdStrGPi = 0
+bdmnStrGPi = 0
+bdsdStrGPi = 0
+
+probCtxSTN = new Vector(numCtxSTN)
+probStrGPe = new Vector(numStrGPe)
+probStrGPi = new Vector(numStrGPi)
+
+gmaxCtxSTN = 0
+gmaxStrGPe = 0
+gmaxStrGPi = 0
+
+gDA_CtxSTN = 0
+gDA_StrGPe = 0
+gDA_StrGPi = 0
+
+delCtxSTN = 0
+delStrGPe = 0
+delStrGPi = 0
+
+dbs_del = 0
+dbs_dur = 0
+dbs_direct_amp = 0
+dbs_direct_pw = 0
+dbs_ad_amp = 0
+dbs_ad_pw = 0
+dbs_period = 0
+
+dbs_odSTNGPe_weight = 0
+dbs_odSTNGPi_weight = 0
+dbs_odGPeSTN_weight = 0
+dbs_odGPiTha_weight = 0
+
+dbs_odSTNGPe_delay = 0
+dbs_odSTNGPi_delay = 0
+dbs_odGPeSTN_delay = 0
+dbs_odGPiTha_delay = 0

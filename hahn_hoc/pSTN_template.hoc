@@ -1,0 +1,111 @@
+/*--------------------------------------------------------------
+	TEMPLATE FILE FOR DEFINING STN NEURONS - Parallel version
+	--------------------------------------------------
+
+	One compartment model and currents derived from:
+
+ 	Otsuka model -> modified by Svjetlana -> compact by Dongchul Lee
+
+	Dongchul C. Lee, Cleveland Clinic, 2005
+
+	May 2006 parallel code - PJ Hahn
+
+--------------------------------------------------------------*/
+
+begintemplate pSTN		// create a new template object
+
+public soma, stn_synlist, connect2target, is_art
+
+objref stn_synlist
+
+create soma
+
+proc init() {
+
+  soma {
+	diam = 60		// geometry
+	L = 60			// so that area is about 10000 um2
+	nseg = 1
+	Ra = 200
+	cm = 1
+
+	insert myions //dummy mechanism used to set initial ion concentrations
+
+	insert stn
+		gnabar_stn = 49e-3   //[S/cm2]
+		gkdrbar_stn = 57e-3  //[S/cm2]
+		gkabar_stn = 5e-3    //[S/cm2]
+		gkcabar_stn = 0.7e-3 //[S/cm2]
+		gcalbar_stn = 15e-3  //[S/cm2]
+		gcatbar_stn = 5e-3   //[S/cm2]
+		kca_stn = 2          //Ca removal rate [1/ms]
+		gl_stn = 0.29e-3     //[S/cm2]
+
+
+	stn_synlist = new List()
+
+	synapses($1, $2) // $1 numCtxSTN, $2 numGPeSTN
+
+  }
+
+
+// Initialize variables
+
+  cai0_ca_ion = 5e-6 //mM //must set initial ion concentrations in hoc file, not mod (see NMODl p27)
+  cao0_ca_ion = 2
+  ki0_k_ion = 105 //calculated so that Nernst potential is same as in paper
+  ko0_k_ion = 3
+  nao0_na_ion = 108
+  nai0_na_ion = 10
+
+}
+
+
+//
+// proc connect2target() { //$o1 target object, $o2 returned NetCon
+// 	soma nc = new NetCon(&v(1), $o1)
+// }
+
+obfunc connect2target() { localobj nc //$o1 target point process, optional $o2 returned netcon
+	soma nc = new NetCon(&v(1), $o1)
+	nc.threshold = 10
+	if (numarg() == 2) {
+		$o2 = nc
+	}
+	return nc
+}
+
+
+objref syn_
+proc synapses() { // $1 numCtxSTN, $2 numGPeSTN
+
+
+// glutamatergic cortical inputs
+// set in pBGconst	numCtxSTN =
+
+	for i=0, $1 - 1 {
+		soma syn_ = new AMPA_S(.5)
+		syn_.Cmax = 1
+		stn_synlist.append(syn_)
+	}
+
+// GABAergic GPe inputs
+// set in pBGconst	numGPeSTN =
+
+	for i=0, $2 - 1 {
+		soma syn_ = new GABAa_S(.5)
+		syn_.Cmax = 1
+		stn_synlist.append(syn_)
+	}
+
+}
+
+
+
+proc is_art() {
+	return 0
+}
+
+
+
+endtemplate pSTN

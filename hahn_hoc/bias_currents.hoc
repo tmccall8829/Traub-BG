@@ -1,0 +1,62 @@
+//----------------------------------------------------------------------------
+// Initialize global variables
+//----------------------------------------------------------------------------
+
+objref biasSTN[numSTN], biasGPe[numGPe], biasGPi[numGPi]
+
+//----------------------------------------------------------------------------
+// Functions to set up network from current value of global variables
+//----------------------------------------------------------------------------
+
+proc BIAconnectNet() { local i, j, k
+
+for (i=pc.id(); i < ncell; i += pc.nhost()) {
+	if (i >= 0 && i < 10 && pc.gid_exists(i+global_gidoffset)) {
+		biasSTN[i] = new IClamp()
+		pc.gid2obj(i+global_gidoffset).soma biasSTN[i].loc(.5)
+	}
+	if (i >= 10 && i < 40 && pc.gid_exists(i+global_gidoffset)) {
+		j = i-10
+		biasGPe[j] = new IClamp()
+		pc.gid2obj(i+global_gidoffset).soma biasGPe[j].loc(.5)
+	}
+	if (i >= 40 && i < 50 && pc.gid_exists(i+global_gidoffset)) {
+		k = i-40
+		biasGPi[k] = new IClamp()
+		pc.gid2obj(i+global_gidoffset).soma biasGPi[k].loc(.5)
+	}
+}
+}
+
+
+//----------------------------------------------------------------------------
+proc BIAupdateWeights() { local i, j, k
+
+for (i=pc.id(); i < ncell; i += pc.nhost()) {
+	if (i >= 0 && i < 10 && pc.gid_exists(i+global_gidoffset)) {
+		biasSTN[i].del = 0
+		biasSTN[i].dur = 1e9
+		biasSTN[i].amp = iBiasSTN
+	}
+	if (i >= 10 && i < 40 && pc.gid_exists(i+global_gidoffset)) {
+		j = i-10
+		biasGPe[j].del = 0
+		biasGPe[j].dur = 1e9
+		biasGPe[j].amp = iBiasGPe
+	}
+	if (i >= 40 && i < 50 && pc.gid_exists(i+global_gidoffset)) {
+		k = i-40
+		biasGPi[k].del = 0
+		biasGPi[k].dur = 1e9
+		biasGPi[k].amp = iBiasGPi
+	}
+}
+}
+
+
+//----------------------------------------------------------------------------
+// Call setup functions when .hoc file is loaded
+//----------------------------------------------------------------------------
+
+BIAconnectNet()
+BIAupdateWeights()

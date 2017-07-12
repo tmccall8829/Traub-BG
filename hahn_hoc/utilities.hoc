@@ -1,0 +1,210 @@
+//proc randomize(seedVal)
+//proc zeroNet()
+//proc netStats(resultVec)
+//proc updateAll()
+//proc getOutput()
+
+
+//load_file("pBGburstSearch.hoc")
+
+
+objref r, sc_r
+
+// -----------------------------------------------------------------------
+proc randomize() {local seedVal	//$1 seedVal base
+////////////////
+seedVal = $1 + pc.id()
+r = new Random(seedVal)
+sc_r = new scopRandom(.5)
+sc_r.seed(seedVal)
+
+print "pc.id() ", pc.id(), " using random seed ", seedVal
+
+}
+
+
+// -----------------------------------------------------------------------
+proc zeroNet() {
+
+	gmaxSTNGPe = 0
+	gmaxGPeGPe = 0
+	gmaxGPeSTN = 0
+	gmaxGPeGPi = 0
+	gmaxSTNGPi = 0
+	gmaxGPiTha = 0
+
+	CONupdateWeights()
+
+	gmaxCtxSTN = 0
+	gmaxStrGPe = 0
+	gmaxStrGPi = 0
+
+	INPupdateWeights()
+
+}
+
+
+// -----------------------------------------------------------------------
+objref st[ncell], isi[ncell], bur[ncell]
+for i=0,ncell-1 {
+	st[i] = new Vector()
+	isi[i] = new Vector()
+        bur[i] = new Matrix()
+}
+
+/*
+proc netStats() {local i,j localobj res,spkRate, burRate			//$o1:res
+//////////////////
+
+//pnm.gatherspikes()	should be called right after prun, calling twice produces error?
+
+res = $o1
+
+spkRate = new Vector(ncell)
+burRate = new Vector(ncell)
+
+for i=0,ncell-1 {
+	st[i].resize(0)
+	isi[i].resize(0)
+        bur[i].resize(1,1)
+}
+
+// get spike times for each cell
+for i=0,pnm.idvec.size-1 {
+	st[pnm.idvec.x(i)].append(pnm.spikevec.x(i))
+}
+
+// process each cell
+for i=0,ncell-1 {
+
+	if (st[i].size > 2) {
+
+		// calculate interspike intervals
+		for j=0,st[i].size-2 {
+			isi[i].append(st[i].x(j+1) - st[i].x(j))
+		}
+
+		// get burst times
+
+		burstSearch(st[i], isi[i], bur[i])
+
+		// calculate average spike and burst rates
+		spkRate.x(i) = 1000*(st[i].size - 1)/st[i].x(st[i].size-1)	      //using total time is time of last spike
+		if (bur[i].ncol == 1) {
+			burRate.x(i) = 0
+		} else {
+		      burRate.x(i) = 1000*bur[i].nrow/st[i].x(st[i].size-1)		//using total time is t at end???
+		}
+
+	} else {
+		spkRate.x(i) = 0
+		burRate.x(i) = 0
+	}
+}
+
+
+
+f_stn = spkRate.mean(cellID(ID_STN, 0), cellID(ID_STN, numSTN-1))
+std_stn = spkRate.stdev(cellID(ID_STN, 0), cellID(ID_STN, numSTN-1))
+//print "STN ", f_stn, std_stn
+
+f_gpe = spkRate.mean(cellID(ID_GPe, 0), cellID(ID_GPe, numGPe-1))
+std_gpe = spkRate.stdev(cellID(ID_GPe, 0), cellID(ID_GPe, numGPe-1))
+//print "GPe ", f_gpe, std_gpe
+
+f_gpi = spkRate.mean(cellID(ID_GPi, 0), cellID(ID_GPi, numGPi-1))
+std_gpi = spkRate.stdev(cellID(ID_GPi, 0), cellID(ID_GPi, numGPi-1))
+//print "GPi ", f_gpi, std_gpi
+
+
+
+br_stn = 60*burRate.mean(cellID(ID_STN, 0), cellID(ID_STN, numSTN-1))
+brstd_stn = 60*burRate.stdev(cellID(ID_STN, 0), cellID(ID_STN, numSTN-1))
+//print "STN(br) ", br_stn, brstd_stn
+
+br_gpe = 60*burRate.mean(cellID(ID_GPe, 0), cellID(ID_GPe, numGPe-1))
+brstd_gpe = 60*burRate.stdev(cellID(ID_GPe, 0), cellID(ID_GPe, numGPe-1))
+//print "GPe(br) ", br_gpe, brstd_gpe
+
+br_gpi = 60*burRate.mean(cellID(ID_GPi, 0), cellID(ID_GPi, numGPi-1))
+brstd_gpi = 60*burRate.stdev(cellID(ID_GPi, 0), cellID(ID_GPi, numGPi-1))
+//print "GPi(br) ", br_gpi, brstd_gpi
+
+
+
+res.resize(6)
+res.x(0) = f_stn
+res.x(1) = f_gpe
+res.x(2) = f_gpi
+res.x(3) = br_stn
+res.x(4) = br_gpe
+res.x(5) = br_gpi
+
+
+}
+
+*/
+
+// -----------------------------------------------------------------------
+proc updateAll() {
+	readParms($s1)
+	BIAupdateWeights()
+	CONupdateWeights()
+	INPupdateWeights()
+}
+
+
+
+strdef junkStr
+proc getOutput() {local i,numFields,tmp localobj f 	//(filename, skipLines, readInputs)
+
+	numTargets = 6
+
+	f = new File()
+
+	{f.ropen($s1)}
+
+	for i=0,$2-1 {
+		f.gets(junkStr)
+	}
+
+
+	for i=0,3+numTargets-1 {
+		tmp = f.scanvar()
+	}
+
+
+	gmaxSTNGPi = f.scanvar()
+	gmaxGPeGPi = f.scanvar()
+	gmaxSTNGPe = f.scanvar()
+	gmaxGPeGPe = f.scanvar()
+	gmaxGPeSTN = f.scanvar()
+	gDA_STNGPi = f.scanvar()
+	gDA_GPeGPi = f.scanvar()
+	gDA_STNGPe = f.scanvar()
+	gDA_GPeGPe = f.scanvar()
+	gDA_GPeSTN = f.scanvar()
+	iBiasSTN = f.scanvar()
+	iBiasGPe = f.scanvar()
+	iBiasGPi = f.scanvar()
+
+
+	if ($3) {
+		// read in input parameters (assumes format is same as listed here)
+
+		gmaxCtxSTN = f.scanvar()
+		gmaxStrGPe = f.scanvar()
+		gmaxStrGPi = f.scanvar()
+
+	/* ... removed in distribution ... */
+
+	}
+
+
+	f.close()
+
+	BIAupdateWeights()
+	CONupdateWeights()
+	INPupdateWeights()
+
+}

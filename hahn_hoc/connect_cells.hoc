@@ -1,0 +1,244 @@
+//----------------------------------------------------------------------------
+// Initialize global variables
+//----------------------------------------------------------------------------
+
+
+
+// FUNCTIONAL COLUMN TEMPLATE
+// STN	  		  2
+// GPe		 	6 7 8
+
+// STN        0 1		  		3 4
+// GPi	  		  2
+
+// GPe	3 4 5				9 10 11
+// STN			  2
+
+// GPe			6 7 8
+// GPi	  		  2
+
+// GPe 			  7
+// GPe    2 3 4 5       6   8		9 10 11 12
+
+
+// ------------------------------------------------------------
+objref offsets, ncGPeSTN, ncSTNGPe, ncGPeGPe, ncSTNGPi, ncGPeGPi
+
+offsets = new Vector()
+ncGPeSTN = new List()
+ncSTNGPe = new List()
+ncGPeGPe = new List()
+ncSTNGPi = new List()
+ncGPeGPi = new List()
+
+// ------------------------------------------------------------
+objref srcGPeSTN[numSTN], srcSTNGPe[numGPe], srcGPeGPe[numGPe], srcSTNGPi[numGPi], srcGPeGPi[numGPi]
+for tmpi=0,numSTN-1 {
+	srcGPeSTN[tmpi] = new Vector()
+}
+for tmpi=0,numGPe-1 {
+	srcSTNGPe[tmpi] = new Vector()
+	srcGPeGPe[tmpi] = new Vector()
+}
+for tmpi=0,numGPi-1 {
+	srcSTNGPi[tmpi] = new Vector()
+	srcGPeGPi[tmpi] = new Vector()
+}
+
+
+// Connect -------------------------------------------------------------------
+proc CONconnectNet() { local i,j,k,rank  localobj target, syn, nc
+
+//-----------------------------------------
+for (i=pc.id(); i < ncell; i += pc.nhost()) {
+	if (i >= 0 && i < 10) {
+		//printf("in STN: i = %d\n", i)
+		offsets.resize(numGPeSTN)	//offset from first GPe within module
+		offsets.x(0) = -3
+		offsets.x(1) = -2
+		offsets.x(2) = -1
+		offsets.x(3) = 3
+		offsets.x(4) = 4
+		offsets.x(5) = 5
+		// Create GPe (source) to STN (target) connections
+		// for j=0, numGPeSTN-1 {
+		// 	// code to connect cells
+		// 	k = 3*(i) + offsets.x(j)
+		// 	if (k < 0) {
+		// 		k = numGPe + k
+		// 	}
+		// 	if (k >= numGPe) {
+		// 		k = k - numGPe
+		// 	}
+		// 	target = pc.gid2cell(i+global_gidoffset)
+		// 	syn	= target.stn_synlist.o(j)
+		// 	//printf("in numGPeSTN. target: %s, syn: %s, k(gid for GPe cell): %d\n", target, syn, k+10)
+		// 	nc = pc.gid_connect(k+10+global_gidoffset, syn)
+		// 	nclist.append(nc)
+		// 	nc.weight = gmaxGPeSTN
+		// 	nc.delay = delGPeSTN
+		// 	ncGPeSTN.append(nc)
+		// 	srcGPeSTN[i].append(k+10)
+		// }
+	}
+	if (i >= 10 && i < 40) {
+		//printf("in GPe: i = %d\n", i)
+		offsets.resize(numGPeGPe)	//offset current GPe
+		offsets.x(0) = -5
+		offsets.x(1) = -4
+		offsets.x(2) = -3
+		offsets.x(3) = -2
+		offsets.x(4) = -1
+		offsets.x(5) = 1
+		offsets.x(6) = 2
+		offsets.x(7) = 3
+		offsets.x(8) = 4
+		offsets.x(9) = 5
+		// Create STN to GPe connections
+		// for j=0, numSTNGPe-1 { // here j = 0 only because numSTNGPe = 1
+		// 	// code to connect cells
+		// 	k = int((i-10)/3) // subtracted 10 from i bc in BGnet, loop is from i=0 to numGPe (0 to 29)
+		// 	if (k < 0) {
+		// 		k = numSTN + k
+		// 	}
+		// 	if (k >= numSTN) {
+		// 		k = k - numSTN
+		// 	}
+		// 	target	= pc.gid2cell(i+global_gidoffset)
+		// 	syn		= target.gpe_synlist.o(j)
+		// 	//printf("in numSTNGPe. target: %s, syn: %s, k(gid for STN cell): %d\n", target, syn, k)
+		// 	nc		= pc.gid_connect(k+global_gidoffset, syn)
+		// 	nclist.append(nc)
+		// 	nc.weight = gmaxSTNGPe
+		// 	nc.delay = delSTNGPe
+		// 	ncSTNGPe.append(nc)
+		// 	srcSTNGPe[i-10].append(k)
+		// }
+		// Create GPe to GPe connections
+		for j=0, numGPeGPe-1 {
+			// code to connect cells
+			k = (i-10) + offsets.x(j)
+			if (k < 0) {
+				k = numGPe + k
+			}
+			if (k >= numGPe) {
+				k = k - numGPe
+			}
+			target	= pc.gid2cell(i+global_gidoffset)
+			syn		= target.gpe_synlist.o(j)
+			//printf("in numGPeGPe. target: %s, syn: %s, k(gid for GPe cell): %d\n", target, syn, k+10)
+			nc		= pc.gid_connect(k+10+global_gidoffset, syn)
+			nclist.append(nc)
+			nc.weight = gmaxGPeGPe
+			nc.delay = delGPeGPe
+			ncGPeGPe.append(nc)
+			srcGPeGPe[i-10].append(k+10)
+		}
+	}
+	if (i >= 40 && i < 50) {
+		//printf("in GPi: i = %d\n", i)
+		offsets.resize(numSTNGPi)	//offset from current GPi
+		offsets.x(0) = -2
+		offsets.x(1) = -1
+		offsets.x(2) = 1
+		offsets.x(3) = 2
+		// Create STN to GPi connections
+		// for j=0, numSTNGPi-1 {
+		// 	//print "in STNGPi for loop in GPi"
+		// 	// code to connect cells
+		// 	k = (i-40) + offsets.x(j)
+		// 	if (k < 0) {
+		// 		k = numSTN + k
+		// 	}
+		// 	if (k >= numSTN) {
+		// 		k = k - numSTN
+		// 	}
+		// 	target 	= pc.gid2cell(i+global_gidoffset)
+		// 	syn		= target.gpi_synlist.o(j)
+		// 	//printf("in numSTNGPi. target: %s, syn: %s, k(gid for STN cell): %d\n", target, syn, k)
+		// 	nc		= pc.gid_connect(k+global_gidoffset, syn)
+		// 	//printf("nc.precell: %s nc.postcell: %s weight: %f delay: %f\n", nc.precell, nc.postcell, nc.weight, nc.delay)
+		// 	nclist.append(nc)
+		// 	nc.weight = gmaxSTNGPi
+		// 	nc.delay = delSTNGPi
+		// 	ncSTNGPi.append(nc)
+		// 	srcSTNGPi[i-40].append(k)
+		// }
+		// Create GPe to GPi connections
+		for j=0, numGPeGPi-1 {
+			// code to connect cells
+			k = 3*(i-40) + j
+			if (k <= 0) {
+				k = numGPe + k
+			}
+			if (k >= numGPe) {
+				k = k - numGPe
+			}
+			target	= pc.gid2cell(i+global_gidoffset)
+			syn		= target.gpi_synlist.o(j)
+			//printf("in numGPeGPi. target: %s, syn: %s, k(gid for GPe cell): %d\n", target, syn, k+10)
+			nc		= pc.gid_connect(k+10+global_gidoffset, syn)
+			nclist.append(nc)
+			//printf("nc.precell: %s\t nc.postcell: %s\t weight: %f\t delay: %f\n", nc.precell, nc.postcell, nc.weight, nc.delay)
+			nc.weight = gmaxGPeGPi
+			nc.delay = delGPeGPi
+			ncGPeGPi.append(nc)
+			srcGPeGPi[i-40].append(k)
+		}
+	}
+}
+
+}
+
+
+// Update -------------------------------------------------------------------
+proc CONupdateWeights() { local i,j
+
+//-----------------------------------------
+// connections to STN
+// ncGPeSTN, ncSTNGPe, ncGPeGPe, ncSTNGPi, ncGPeGPi
+
+// for i=0, ncGPeSTN.count-1 {
+// 	ncGPeSTN.o(i).weight = gDA_GPeSTN*gmaxGPeSTN/numGPeSTN
+// 	ncGPeSTN.o(i).delay = delGPeSTN
+// }
+//
+// for i=0, ncSTNGPe.count-1 {
+// 	ncSTNGPe.o(i).weight = gDA_STNGPe*gmaxSTNGPe/numSTNGPe
+// 	ncSTNGPe.o(i).delay = delSTNGPe
+// }
+
+for i=0, ncGPeGPe.count-1 {
+	ncGPeGPe.o(i).weight = gDA_GPeGPe*gmaxGPeGPe/numGPeGPe
+	ncGPeGPe.o(i).delay = delGPeGPe
+}
+
+// for i=0, ncSTNGPi.count-1 {
+// 	ncSTNGPi.o(i).weight = gDA_STNGPi*gmaxSTNGPi/numSTNGPi
+// 	ncSTNGPi.o(i).delay = delSTNGPi
+// }
+
+for i=0, ncGPeGPi.count-1 {
+	ncGPeGPi.o(i).weight = gDA_GPeGPi*gmaxGPeGPi/numGPeGPi
+	ncGPeGPi.o(i).delay = delGPeGPi
+}
+
+}
+
+
+//----------------------------------------------------------------------------
+// Call setup functions when .hoc file is loaded
+//----------------------------------------------------------------------------
+
+proc CONprintWeights() {local i  localobj f
+        f = new File()
+        f.wopen("dr_weights_cons.txt")
+        for i=0, nclist.count()-1 {
+                f.printf("Cell %s -> cell %s\t weight and delay: %f\t%f\n", nclist.o(i).precell, nclist.o(i).postcell, nclist.o(i).weight, nclist.o(i).delay)
+        }
+        f.close()
+}
+
+CONconnectNet()
+CONupdateWeights()
+//CONprintWeights()

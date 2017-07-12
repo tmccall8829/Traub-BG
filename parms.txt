@@ -1,0 +1,134 @@
+//-----------------------------------------------------------------------------------------------------
+// IDs and counts
+
+10		numSTN
+30 		numGPe
+10		numGPi
+10    numStr
+
+1		numSTNGPe		// each GPe contacted by numSTNGPe presyn STN cells, etc...
+10		numGPeGPe
+6		numGPeSTN
+3		numGPeGPi
+4		numSTNGPi
+1		numCtxSTN
+1   numCtxStr
+1		numStrGPe
+1		numStrGPi
+1		numGPiTha
+
+3		divSTNGPe		// each STN contacts divSTNGPe postsyn GPe cells, etc...
+10		divGPeGPe
+2		divGPeSTN
+1		divGPeGPi
+4		divSTNGPi
+1		divGPiTha
+
+
+//-----------------------------------------------------------------------------------------------------
+// bias currents
+
+0.0336	iBiasSTN
+0.1578	iBiasGPe
+0.00653	iBiasGPi
+
+
+//-----------------------------------------------------------------------------------------------------
+// cell to cell connection parameters
+
+0.0826	gmaxSTNGPe
+0.0322	gmaxGPeGPe
+0.0645	gmaxGPeSTN
+0.0384	gmaxGPeGPi
+0.1644	gmaxSTNGPi
+0.0		gmaxGPiTha
+
+1.25		gDA_STNGPe
+1		gDA_GPeGPe
+1.25		gDA_GPeSTN
+1.25		gDA_GPeGPi
+1		gDA_STNGPi
+0.0		gDA_GPiTha
+
+// THESE NEED TO BE SELECTED BASED ON EXPERIMENTAL/ANATOMICAL DATA ***********************************
+4		delSTNGPe
+4		delGPeGPe
+4		delGPeSTN
+4		delGPeGPi
+4		delSTNGPi
+4		delGPiTha
+
+
+//-----------------------------------------------------------------------------------------------------
+// higher level input connection parameters
+
+75		imnCtxSTN
+15		isdCtxSTN
+4		bmnCtxSTN
+1		bsdCtxSTN
+25		bdmnCtxSTN
+5		bdsdCtxSTN
+
+75		imnStrGPe
+15		isdStrGPe
+4		bmnStrGPe
+1		bsdStrGPe
+25		bdmnStrGPe
+5		bdsdStrGPe
+
+150		imnStrGPi
+30		isdStrGPi
+4		bmnStrGPi
+1		bsdStrGPi
+25		bdmnStrGPi
+5		bdsdStrGPi
+
+0.25		probCtxSTN.x0
+0.25		probCtxSTN.x1
+0.25		probCtxSTN.x2
+0.25		probCtxSTN.x3
+0.25		probCtxSTN.x4
+0.25		probCtxSTN.x5
+0.25		probCtxSTN.x6
+
+0.25		probStrGPe.x0
+0.25		probStrGPe.x1
+0.25		probStrGPe.x2
+0.25		probStrGPe.x3
+0.25		probStrGPe.x4
+0.25		probStrGPe.x5
+0.25		probStrGPe.x6
+
+0.25		probStrGPi.x0
+0.25		probStrGPi.x1
+0.25		probStrGPi.x2
+0.25		probStrGPi.x3
+0.25		probStrGPi.x4
+0.25		probStrGPi.x5
+0.25		probStrGPi.x6
+
+0.0865	gmaxCtxSTN
+0.0557	gmaxStrGPe
+0.05		gmaxStrGPi
+
+1.25		gDA_CtxSTN
+1.25		gDA_StrGPe
+1		gDA_StrGPi
+
+// THESE NEED TO BE SELECTED BASED ON EXPERIMENTAL/ANATOMICAL DATA ***********************************
+4		delCtxSTN
+4		delStrGPe
+4		delStrGPi
+
+
+
+//-----------------------------------------------------------------------------------------------------
+// DBS parameters
+
+250		dbs_del
+250		dbs_dur
+10		dbs_direct_amp
+0.25		dbs_direct_pw
+.15		dbs_ad_amp
+2		dbs_ad_pw
+7.35		dbs_period		// _136_ Hz
