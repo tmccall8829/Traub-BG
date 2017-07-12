@@ -1,0 +1,244 @@
+/* This is the init.hoc file for the custom model created by Thomas McCall and
+Dr. Chris Fietkiewicz. This model uses the nrntraub model, created by Traub, as
+the cortical input Tom's re-creation of the BGnet model, named McCall-BGnet,
+which is a complete rewrite of the BGnet model to encourage compatibility between
+Traub and BGnet.
+
+                        Init.hoc file created June 29th, 2017.
+
+*/
+
+/* Begin with Traub code. The Traub code is loaded first due to the complex
+nature of their cell creation and connection mechanisms. Since the McCall-BGnet
+model is much simpler, that code will be loaded secondary to the Traub code.*/
+
+{xopen("Traub/hoc/defvar.hoc")}
+
+/* Set up some default variables for Traub.
+Most important are load_balance_phase, one_tenth_ncell which dictates the number
+of cells created, and use_traubexact. These are the most important because they
+dictate the functionality of some procs. */
+default_var("load_balance_phase", 0)
+default_var("one_tenth_ncell", 1)
+default_var("use_gap", 0)
+default_var("use_ectopic", 1)
+default_var("use_inject", 1)
+default_var("awake", 1)
+default_var("default_delay", 0.5)
+default_var("ranseedbase", 1)
+default_var("use_traubexact", 0) // will be reset to 0 if load balance
+default_var("wholecell_prefix", "cxwhole")
+default_var("multisplit_prefix", "cx")
+default_var("multisplit_nhost", 256)
+default_var("msoptfactor", 0.8)
+default_var("nthread", 1)
+default_var("savestatetest", 0)
+default_var("spike_compress", 5)
+default_var("cacheeffic", 1)  // for multisplit it is always 1
+default_var("multisend", 0)
+default_var("selfevents", 0)
+default_var("fakerank", -1)
+default_var("fakenhost", -1)
+default_var("ctxProb", 0.5) // Probability value for creating cortex connections'
+default_var("hmodelstate", 1) // 0 for MPTP, 1 for Normal
+default_var("my_tstop", 1000)
+
+/* Values for ampa, ndma, and gaba_a. These correspond to parameter values in the
+corresponding mod files. */
+gfac_AMPA = 1
+gfac_NMDA = 1
+gfac_GABAA = 1
+
+use_p2c_net_connections = 0 // not 0, requires p2c emitted  map and compmap files
+
+{localloadfile("Traub/manage_setup.hoc")}
+
+// printf("Created %d Traub Cells.\n", traub_cells.count)
+// for i=0, traub_cells.count-1 {
+//     printf("Cell in traub_cells at gid %d: %s\n", i, traub_cells.o(i))
+// }
+// printf("Created %d NetCons.\n", pnm.nclist.count)
+
+/* At this point, all of the Traub cells, cell connections, and other parameters
+have been dealt with. Below, the McCall-BGnet cells and connections are created. Their
+GIDs have been modified to fit alongside the Traub GIDs. */
+
+// This file is already loaded in Traub/manage_setup.hoc
+//{load_file("nrngui.hoc")}
+
+create acell_home_
+access acell_home_
+
+// steps_per_ms=40
+// dt=0.025
+// secondorder=2
+// tstop=100
+
+// Defining a new pc to use here for just the Hahn code.
+// Traub uses pc, but it's really pnm.pc (Traub uses pc = pnm.pc after declaring)
+objref pc
+pc = new ParallelContext()
+
+{load_file("hahn_hoc/setup_globalvars.hoc")} // Initializes all of the global vars
+{load_file("hahn_hoc/load_parms.hoc")} // Load the load_parms file, read parameters
+{load_file("hahn_hoc/make_cells.hoc")} // Load the file that creates cells
+//{load_file("netparmpi.hoc")} // For using the ParallelNetManager class, already loaded in Traub
+
+// Read BGnet parameters
+readParms("parms.txt")
+
+{objref rf}
+{rf = new File("randseed.txt")}
+{rf.ropen()}
+{seedVal = rf.scanvar()}
+{rf.close()}
+
+// Make cells using parameters from parms.txt
+global_gidoffset = 4000
+makecells(ncell)
+
+/* The global_gidoffset is 4000. So the cells in hahn_cells have GIDs 4000-4049,
+and the Traub cells have GIDs 0-355. I made the offset 4000 so that if the
+Traub model is configured to use 3560 cells, there won't be an error. If any
+adjustments are desired, the value of global_gidoffset can be changed here and
+will affect the whole BGnet cell complex.*/
+
+// printf("Created %d Hahn Cells.\n", hahn_cells.count)
+// for i=0, hahn_cells.count-1 {
+//     printf("Cell in hahn_cells at gid %d: %s\n", i+global_gidoffset, hahn_cells.o(i))
+// }
+
+// Add bias currents to set resting frequencies
+{load_file("hahn_hoc/bias_currents.hoc")}
+
+// Connect BGnet cells together
+{load_file("hahn_hoc/connect_cells.hoc")}
+
+// Connect BGnet cortical inputs to cells, set model status.
+// NOTE THAT THIS IS TEMPORARY AND WILL BE CHANGED TO TRAUB CORTICAL INPUT
+{load_file("hahn_hoc/cortical_input.hoc")}
+
+// Utilities for gathering Hahn spike data and so on
+{load_file("hahn_hoc/utilities.hoc")}
+
+print "Reached the end of loading BGnet files"
+print "Traub and BGnet files networks set up"
+
+// Run the Traub model
+// prun()
+//
+// if (pc.id == 0) { print "tstop = ", tstop }
+// if (pc.id == 0) { print "RunTime: ", runtime }
+//
+// spike2file()
+
+// pc.barrier()
+
+// BGnet code
+celsius=33
+dt=0.05
+steps_per_ms=20
+tstop = my_tstop
+v_init=-58
+secondorder=0 // Need to reset this to default (0), since it's set to 2 by Traub
+
+randomize(seedVal)
+
+objref tvec, hahn_idvec
+proc spikerecord() {local i, j, k, rank  localobj nc, nil
+	tvec = new Vector()
+	hahn_idvec = new Vector()
+	for rank=0, pc.nhost()-1 {
+		if (rank==pc.id()) {
+			for (i=pc.id(); i < ncell; i += pc.nhost()) {
+				pc.spike_record(i+global_gidoffset, tvec, hahn_idvec)
+			}
+		}
+	}
+}
+
+{pc.set_maxstep(10)}
+
+spikerecord()
+
+{stdinit()}
+{runtime = startsw()}
+{pc.psolve(tstop)}
+{runtime = startsw() - runtime}
+
+// Recording utilities and setDBS()
+{load_file("hahn_hoc/configure_data.hoc")}
+
+if (pc.id == 0) { print "tstop = ", tstop }
+if (pc.id == 0) { print "RunTime: ", runtime }
+
+spike2file()
+
+// Update and save seed value
+{rf.wopen("randseed.txt")}
+rf.printf("%d\n", seedVal+1)
+rf.close()
+
+strdef str
+
+netNum = 0
+getOutput("pNets.dat", netNum, 1) // Load a parameter set
+
+proc spikeout() {local i, rank  localobj f
+	f = new File()
+
+	pc.barrier()
+	for rank=0, pc.nhost()-1 {
+		if (rank==pc.id()) {
+			for i=0, tvec.size-1 {
+				f.aopen($s1)
+				f.printf("%f\t%f\n", tvec.x[i], hahn_idvec.x[i])
+				f.close()
+			}
+		}
+		pc.barrier()
+	}
+}
+
+if (hmodelstate == 0) {
+	setMPTPinput()
+	sprint(str, "mptp-spikes.txt")
+}
+if (hmodelstate == 1) {
+	setNORMALinput()
+	sprint(str, "normal-spikes.txt")
+}
+
+// Open file, clear the old data, and write new data
+// Necessary due to writing loop above and f.wopen vs. f.aopen
+// Look for better fix
+objref tmpf
+tmpf = new File()
+{tmpf.wopen(str)}
+tmpf.printf("")
+tmpf.close()
+
+spikeout(str)
+
+// if (pc.nhost > 5) {cvode_active(1)} // to count equations
+// {pc.runworker()}
+//
+// print "Maximum integration interval: ", mindelay()
+
+//
+// perf2file()
+// endtime = startsw() - endtime
+// print "Traub Model Endtime ", endtime
+
+// Save model connection info to a file, in hahn_hoc directory
+// Printing is wonky in parallel, only use when in serial
+if (pc.nhost <= 1) {
+	{localloadfile("hahn_hoc/print_model_info.hoc")}
+}
+{pc.runworker()}
+{pc.done()}
+
+{pc.done()}
+if (pc.id() == 0) {
+	printf("Runtime: %f", runtime)
+}
