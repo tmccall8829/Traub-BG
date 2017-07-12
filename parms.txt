@@ -110,15 +110,18 @@
 0.0865	gmaxCtxSTN
 0.0557	gmaxStrGPe
 0.05		gmaxStrGPi
+0.0865  gmaxCtxStr
 
 1.25		gDA_CtxSTN
 1.25		gDA_StrGPe
 1		gDA_StrGPi
+1.25    gDA_CtxStr
 
 // THESE NEED TO BE SELECTED BASED ON EXPERIMENTAL/ANATOMICAL DATA ***********************************
 4		delCtxSTN
 4		delStrGPe
 4		delStrGPi
+4   delCtxStr
 
 
 

@@ -92,14 +92,17 @@ probStrGPe = new Vector(numStrGPe)
 probStrGPi = new Vector(numStrGPi)
 
 gmaxCtxSTN = 0
+gmaxCtxStr = 0
 gmaxStrGPe = 0
 gmaxStrGPi = 0
 
 gDA_CtxSTN = 0
+gDA_CtxStr = 0
 gDA_StrGPe = 0
 gDA_StrGPi = 0
 
 delCtxSTN = 0
+delCtxStr = 0
 delStrGPe = 0
 delStrGPi = 0
 

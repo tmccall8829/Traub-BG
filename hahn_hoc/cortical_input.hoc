@@ -191,7 +191,7 @@ proc INPupdateWeights() { local i,j,k
 		ncCtxStr.o(k).delay = delCtxSTN
 	}
 	for k=0, ncStrGPe.count-1 {
-		ncStrGPe.o(k).weight = gDA_StrGPe*gmaxStrGPe/numStrGPe
+		ncStrGPe.o(k).weight = gDA_StrGPe*gmaxStrGPe/numStrGPe * 8
 		ncStrGPe.o(k).delay = delStrGPe
 	}
 	for k=0, ncStrGPi.count-1 {
