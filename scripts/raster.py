@@ -9,6 +9,6 @@ def plotSpikes(in_file):
 	data = data.T
 
 	pyplot.plot(data[:, 0], data[:, 1], 'b.', markersize=marker_size)
-
+	pyplot.ylim([156, 256])
 
 	savefig(in_file[:len(in_file)-4] + '.png', dpi=500)
