@@ -240,7 +240,7 @@ extern void _cvode_abstol( Symbol**, double*, int);
  pnt_receive_init[_mechtype] = _net_init;
  pnt_receive_size[_mechtype] = 3;
  	hoc_register_var(hoc_scdoub, hoc_vdoub, hoc_intfunc);
- 	ivoc_help("help ?1 AMPA_S /Users/tom/Computational-Neuroscience-Research/Traub-BG/x86_64/ampap.mod\n");
+ 	ivoc_help("help ?1 AMPA_S /Users/tom/Traub-BG/x86_64/ampap.mod\n");
  hoc_register_limits(_mechtype, _hoc_parm_limits);
  hoc_register_units(_mechtype, _hoc_parm_units);
  }

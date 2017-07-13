@@ -169,7 +169,7 @@ extern void _cvode_abstol( Symbol**, double*, int);
   hoc_register_prop_size(_mechtype, 6, 6);
  	nrn_writes_conc(_mechtype, 0);
  	hoc_register_var(hoc_scdoub, hoc_vdoub, hoc_intfunc);
- 	ivoc_help("help ?1 myions /Users/tom/Computational-Neuroscience-Research/Traub-BG/x86_64/myions.mod\n");
+ 	ivoc_help("help ?1 myions /Users/tom/Traub-BG/x86_64/myions.mod\n");
  hoc_register_limits(_mechtype, _hoc_parm_limits);
  hoc_register_units(_mechtype, _hoc_parm_units);
  }

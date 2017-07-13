@@ -183,19 +183,19 @@ begin_tuftRS = begin_tuftIB + num_tuftIB
 //----------------------------------------------------------------------------
 proc INPupdateWeights() { local i,j,k
 	for k=0, ncCtxSTN.count-1 {
-		ncCtxSTN.o(k).weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN
+		ncCtxSTN.o(k).weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN / 7
 		ncCtxSTN.o(k).delay = delCtxSTN
 	}
 	for k=0, ncCtxStr.count-1 {
-		ncCtxStr.o(k).weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN
-		ncCtxStr.o(k).delay = delCtxSTN
+		ncCtxStr.o(k).weight = gDA_CtxStr*gmaxCtxStr/numCtxStr
+		ncCtxStr.o(k).delay = delCtxStr
 	}
 	for k=0, ncStrGPe.count-1 {
-		ncStrGPe.o(k).weight = gDA_StrGPe*gmaxStrGPe/numStrGPe * 8
+		ncStrGPe.o(k).weight = gDA_StrGPe*gmaxStrGPe/numStrGPe / 7
 		ncStrGPe.o(k).delay = delStrGPe
 	}
 	for k=0, ncStrGPi.count-1 {
-		ncStrGPi.o(k).weight = gDA_StrGPi*gmaxStrGPi/numStrGPi
+		ncStrGPi.o(k).weight = gDA_StrGPi*gmaxStrGPi/numStrGPi / 7
 		ncStrGPi.o(k).delay = delStrGPi
 	}
 }

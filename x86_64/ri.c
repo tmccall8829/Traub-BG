@@ -126,7 +126,7 @@ extern void _cvode_abstol( Symbol**, double*, int);
 	int _vectorized = 0;
   _initlists();
  	hoc_register_var(hoc_scdoub, hoc_vdoub, hoc_intfunc);
- 	ivoc_help("help ?1 ri /Users/tom/Computational-Neuroscience-Research/Traub-BG/x86_64/ri.mod\n");
+ 	ivoc_help("help ?1 ri /Users/tom/Traub-BG/x86_64/ri.mod\n");
  }
 static int _reset;
 static char *modelname = "";
