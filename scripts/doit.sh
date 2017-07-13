@@ -10,7 +10,7 @@ mpirun -np 16 nrniv -mpi normal.hoc
 
 sleep 1
 
-python scripts/modelNotify.py
+#python scripts/modelNotify.py
 
 python scripts/plotSpikes.py
 
