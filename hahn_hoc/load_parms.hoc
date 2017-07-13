@@ -115,14 +115,17 @@ for i=0,numStrGPi-1 {
 }
 
 gmaxCtxSTN = f.scanvar()
+gmaxCtxStr = f.scanvar()
 gmaxStrGPe = f.scanvar()
 gmaxStrGPi = f.scanvar()
 
 gDA_CtxSTN = f.scanvar()
+gDA_CtxStr = f.scanvar()
 gDA_StrGPe = f.scanvar()
 gDA_StrGPi = f.scanvar()
 
 delCtxSTN = f.scanvar()
+delCtxStr = f.scanvar()
 delStrGPe = f.scanvar()
 delStrGPi = f.scanvar()
 

@@ -215,6 +215,7 @@ imnStrGPe = 75
 imnStrGPi = 150
 
 gDA_CtxSTN = 1.25
+gDA_CtxStr = 1.25
 gDA_StrGPe = 1.25
 gDA_StrGPi = 1
 gDA_STNGPe = 1.25
@@ -242,6 +243,7 @@ imnStrGPe = 100
 imnStrGPi = 100
 
 gDA_CtxSTN = 1
+gDA_CtxStr = 1
 gDA_StrGPe = 1
 gDA_StrGPi = 1
 gDA_STNGPe = 2
