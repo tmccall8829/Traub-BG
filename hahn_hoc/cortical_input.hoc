@@ -44,7 +44,7 @@ begin_tuftRS = begin_tuftIB + num_tuftIB
 			for j=0, numCtxSTN-1 {
 				for k=0, num_tuftIB-1 {
 					r = randCon.repick()
-					if (r < ctxProb) {
+					if (r < (ctxProb/5)) {
 						target = pc.gid2cell(i+global_gidoffset)
 						syn = target.stn_synlist.o(j)
 						nc = pc.gid_connect(begin_tuftIB + k, syn)
@@ -117,7 +117,7 @@ begin_tuftRS = begin_tuftIB + num_tuftIB
 			for j=0, numCtxSTN-1 {
 				for p=0, num_tuftRS-1 {
 					r = randCon.repick()
-					if (r < ctxProb) {
+					if (r < (ctxProb/5)) {
 						target = pc.gid2cell(i+global_gidoffset)
 						syn = target.stn_synlist.o(j)
 						nc = pc.gid_connect(begin_tuftRS + p, syn)
@@ -183,7 +183,7 @@ begin_tuftRS = begin_tuftIB + num_tuftIB
 //----------------------------------------------------------------------------
 proc INPupdateWeights() { local i,j,k
 	for k=0, ncCtxSTN.count-1 {
-		ncCtxSTN.o(k).weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN / 4
+		ncCtxSTN.o(k).weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN
 		ncCtxSTN.o(k).delay = delCtxSTN
 	}
 	for k=0, ncCtxStr.count-1 {
@@ -191,7 +191,7 @@ proc INPupdateWeights() { local i,j,k
 		ncCtxStr.o(k).delay = delCtxStr
 	}
 	for k=0, ncStrGPe.count-1 {
-		ncStrGPe.o(k).weight = gDA_StrGPe*gmaxStrGPe/numStrGPe / 4
+		ncStrGPe.o(k).weight = gDA_StrGPe*gmaxStrGPe/numStrGPe
 		ncStrGPe.o(k).delay = delStrGPe
 	}
 	for k=0, ncStrGPi.count-1 {
