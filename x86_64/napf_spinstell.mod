@@ -1,1 +1,0 @@
-../mod/napf_spinstell.mod

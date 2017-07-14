@@ -1,1 +1,0 @@
-../mod/ampa.mod

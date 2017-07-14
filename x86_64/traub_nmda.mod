@@ -1,1 +1,0 @@
-../mod/traub_nmda.mod

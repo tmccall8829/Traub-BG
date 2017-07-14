@@ -1,1 +1,0 @@
-../mod/rampsyn.mod
