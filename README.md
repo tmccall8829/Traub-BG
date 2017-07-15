@@ -1,22 +1,23 @@
-##Traub-BG README
+# Traub-BG README
 
 (See Traub/README or nrntraub/README for a Traub model roadmap.)
 
-**Compiling**
+## Compiling
 This directory, Traub-BG, contains all of the files necessary to run the model. The 
 github repo is currently configured (7/15/2017) not to include the directory of 
 compiled mod files, x86_64 (or something else, depending on your machine architecture).
 So to run the model, you must first compile the mod files. 
 
 To compile the model, ensure that your working directory is Traub-BG and then type:
-
-> nrnivmodl mod
+```
+nrnivmodl mod
+```
 
 at the command-line prompt. That will compile the mod files -- no other special 
 configuration is necessary.
 
 
-**Running the model**
+## Running the model
 
 First of all, you will notice that there are files named "mptp.hoc" and "normal.hoc".
 These .hoc files are identical, except for the fact that one of them runs the model in
@@ -27,12 +28,13 @@ in serial mode will take a very long time, so parallel runs are probably preferr
 
 To run the model, you have two options: you can either use the shell script named 
 "doit.sh" in the scripts directory by typing
-
-> scripts/doit.sh
-
+```
+scripts/doit.sh
+```
 or you can run the mptp.hoc file and the normal.hoc file separately by typing
-
-> mpirun -np <x> nrniv -mpi mptp.hoc (or normal.hoc)
+```
+mpirun -np <x> nrniv -mpi mptp.hoc (or normal.hoc)
+```
 
 where x is the number of processes. I have the shell script configured to use 16, but
 you can use any number that is appropriate for your machine.
@@ -43,7 +45,7 @@ current t value. When t gets to tstop (set to 1000 in the .hoc files), the model
 done. It will print out the runtime and then exit.
 
 
-**Analyzing results**
+## Analyzing results
 
 The scripts directory contains some python scripts for analyzing the model:
 1) plotRates.py (for generating a plot of the spike rates)
@@ -61,8 +63,9 @@ If you run the model using the doit.sh script, these python scripts will run
 automatically. They'll ask you for the global_gidoffset (which is 4000 here), and the
 sim_time (type 1 for 1 second -- that's the default). If you run the mptp.hoc and
 normal.hoc files individually, you'll need to run
-
-> python scripts/<script-name.py>
+```
+python scripts/<script-name.py>
+```
 
 to generate the figures. 
 
@@ -71,7 +74,7 @@ into these directories, because then the python scripts will not be able to find
 data files (spike files) to analyze.
 
 
-**Notes on the model layout**
+## Notes on the model layout
 
 The model uses the Traub model (files are located in the Traub directory) as the 
 cortical input for the BGnet model (files are distributed throughout the Traub-BG
