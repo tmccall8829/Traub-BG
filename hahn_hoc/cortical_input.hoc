@@ -61,7 +61,7 @@ begin_tuftRS = begin_tuftIB + num_tuftIB
 			for j=0, numStrGPe-1 {
 				for k=0, numStr-1 {
 					r = randCon.repick()
-					if (r < ctxProb) {
+					if (r < (ctxProb + 0.25)) {
 						target = pc.gid2cell(i+global_gidoffset)
 						syn = target.gpe_synlist.o(j)
 						nc = pc.gid_connect(k+global_gidoffset+50, syn)
@@ -78,7 +78,7 @@ begin_tuftRS = begin_tuftIB + num_tuftIB
 			for j=0, numStrGPi-1 {
 				for k=0, numStr-1 {
 					r = randCon.repick()
-					if (r < ctxProb) {
+					if (r < (ctxProb + 0.25)) {
 						target = pc.gid2cell(i+global_gidoffset)
 						syn = target.gpi_synlist.o(j)
 						nc = pc.gid_connect(global_gidoffset+k+50, syn)
@@ -133,7 +133,7 @@ begin_tuftRS = begin_tuftIB + num_tuftIB
 			for j=0, numStrGPe-1 {
 				for p=0, numStr-1 {
 					r = randCon.repick()
-					if (r < ctxProb) {
+					if (r < (ctxProb + 0.25)) {
 						target = pc.gid2cell(i+global_gidoffset)
 						syn = target.gpe_synlist.o(j)
 						nc = pc.gid_connect(p+global_gidoffset+50, syn)
@@ -149,7 +149,7 @@ begin_tuftRS = begin_tuftIB + num_tuftIB
 			for j=0, numStrGPi-1 {
 				for p=0, numStr-1 {
 					r = randCon.repick()
-					if (r < ctxProb) {
+					if (r < (ctxProb + 0.25)) {
 						target = pc.gid2cell(i+global_gidoffset)
 						syn = target.gpi_synlist.o(j)
 						nc = pc.gid_connect(p + global_gidoffset + 50, syn)
@@ -183,19 +183,19 @@ begin_tuftRS = begin_tuftIB + num_tuftIB
 //----------------------------------------------------------------------------
 proc INPupdateWeights() { local i,j,k
 	for k=0, ncCtxSTN.count-1 {
-		ncCtxSTN.o(k).weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN
+		ncCtxSTN.o(k).weight = gDA_CtxSTN*gmaxCtxSTN/numCtxSTN / 8
 		ncCtxSTN.o(k).delay = delCtxSTN
 	}
 	for k=0, ncCtxStr.count-1 {
-		ncCtxStr.o(k).weight = gDA_CtxStr*gmaxCtxStr/numCtxStr
+		ncCtxStr.o(k).weight = gDA_CtxStr*gmaxCtxStr/numCtxStr / 8
 		ncCtxStr.o(k).delay = delCtxStr
 	}
 	for k=0, ncStrGPe.count-1 {
-		ncStrGPe.o(k).weight = gDA_StrGPe*gmaxStrGPe/numStrGPe
+		ncStrGPe.o(k).weight = gDA_StrGPe*gmaxStrGPe/numStrGPe / 16
 		ncStrGPe.o(k).delay = delStrGPe
 	}
 	for k=0, ncStrGPi.count-1 {
-		ncStrGPi.o(k).weight = gDA_StrGPi*gmaxStrGPi/numStrGPi
+		ncStrGPi.o(k).weight = gDA_StrGPi*gmaxStrGPi/numStrGPi / 8
 		ncStrGPi.o(k).delay = delStrGPi
 	}
 }
