@@ -69,11 +69,6 @@ GIDs have been modified to fit alongside the Traub GIDs. */
 create acell_home_
 access acell_home_
 
-// steps_per_ms=40
-// dt=0.025
-// secondorder=2
-// tstop=100
-
 // Defining a new pc to use here for just the Hahn code.
 // Traub uses pc, but it's really pnm.pc (Traub uses pc = pnm.pc after declaring)
 objref pc
@@ -114,8 +109,7 @@ will affect the whole BGnet cell complex.*/
 // Connect BGnet cells together
 {load_file("hahn_hoc/connect_cells.hoc")}
 
-// Connect BGnet cortical inputs to cells, set model status.
-// NOTE THAT THIS IS TEMPORARY AND WILL BE CHANGED TO TRAUB CORTICAL INPUT
+// Connect cortical inputs to cells, set model status.
 {load_file("hahn_hoc/cortical_input.hoc")}
 
 // Utilities for gathering Hahn spike data and so on
@@ -123,16 +117,6 @@ will affect the whole BGnet cell complex.*/
 
 print "Reached the end of loading BGnet files"
 print "Traub and BGnet files networks set up"
-
-// Run the Traub model
-// prun()
-//
-// if (pc.id == 0) { print "tstop = ", tstop }
-// if (pc.id == 0) { print "RunTime: ", runtime }
-//
-// spike2file()
-
-// pc.barrier()
 
 // BGnet code
 celsius=33
@@ -220,21 +204,12 @@ tmpf.close()
 
 spikeout(str)
 
-// if (pc.nhost > 5) {cvode_active(1)} // to count equations
-// {pc.runworker()}
-//
-// print "Maximum integration interval: ", mindelay()
-
-//
-// perf2file()
-// endtime = startsw() - endtime
-// print "Traub Model Endtime ", endtime
-
 // Save model connection info to a file, in hahn_hoc directory
-// Printing is wonky in parallel, only use when in serial
+// Printing is wonky in parallel, only used when in serial
 if (pc.nhost <= 1) {
 	{localloadfile("hahn_hoc/print_model_info.hoc")}
 }
+
 {pc.runworker()}
 {pc.done()}
 
