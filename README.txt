@@ -22,7 +22,8 @@ First of all, you will notice that there are files named "mptp.hoc" and "normal.
 These .hoc files are identical, except for the fact that one of them runs the model in
 the MPTP state and the other runs the model in the normal state.
 
-You may run the model either in serial mode or in parallel mode. Just note that runningin serial mode will take a very long time, so parallel runs are probably preferred.
+You may run the model either in serial mode or in parallel mode. Just note that running
+in serial mode will take a very long time, so parallel runs are probably preferred.
 
 To run the model, you have two options: you can either use the shell script named 
 "doit.sh" in the scripts directory by typing
