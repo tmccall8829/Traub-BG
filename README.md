@@ -53,7 +53,7 @@ The scripts directory contains some python scripts for analyzing the model:
 3. modelNotify.py (for sending you a text when the model is done (optional))
 4. raster.py (for generating an individual raster plot for the Traub model data)
 
-The scripts are relatively straight-forward. Just keep in mind that they are hard 
+The scripts are relatively straightforward. Just keep in mind that they are hard 
 coded to use set file names, and if you change the default file names you will also
 have to change the scripts. They are currently written to use python 3.6, so if you 
 use a different python version (which you likely do, probably 2.7 or something) you 
