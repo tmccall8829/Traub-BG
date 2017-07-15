@@ -48,10 +48,10 @@ done. It will print out the runtime and then exit.
 ## Analyzing results
 
 The scripts directory contains some python scripts for analyzing the model:
-1) plotRates.py (for generating a plot of the spike rates)
-2) plotSpikes.py (for generating a raster plot for mptp-spikes & normal-spikes files)
-3) modelNotify.py (for sending you a text when the model is done (optional))
-4) raster.py (for generating an individual raster plot for the Traub model data)
+1. plotRates.py (for generating a plot of the spike rates)
+2. plotSpikes.py (for generating a raster plot for mptp-spikes & normal-spikes files)
+3. modelNotify.py (for sending you a text when the model is done (optional))
+4. raster.py (for generating an individual raster plot for the Traub model data)
 
 The scripts are relatively straight-forward. Just keep in mind that they are hard 
 coded to use set file names, and if you change the default file names you will also
