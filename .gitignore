@@ -1,7 +1,1 @@
 .DS_Store
-*.pyc
-mptp-spikes*
-normal-spikes*
-out*
-old-screenshots
-x86_64
